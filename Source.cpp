@@ -1,4 +1,4 @@
-#include "Header.h"
+#include "Geometry.h"
 #include <cstdio>
 #include <fstream>
 #include <iostream>
@@ -103,7 +103,7 @@ Points reedAns(ifstream& file, int n)
 	Points points;
 	while (n)
 	{
-		long double  x, y;
+		long double x, y;
 		file >> x >> y;
 		points.push_back(Point(x, y));
 		n--;
@@ -119,13 +119,15 @@ bool comp(Points& p1, Points& p2)
 	return true;
 }
 
-void print(Points& p, ifstream &ans) 
+void print(char *name, Points& p, ifstream &ans)
 {
+	cout << name << ':';
+	cout.width(40 - strlen(name) + 1);
+	cout.fill(' ');
+	cout << (comp(p, reedAns(ans, p.size())) ? "Ok" : "Fail") << endl;
 	for (int i = 0; i < p.size(); i++)
 		printf("x = %F y = %F\n", p[i].x, p[i].y);
-	if (comp(p, reedAns(ans, p.size())))
-		cout << "ok\n" << endl;
-	else cout << "fail\n" << endl;
+	cout << endl;
 }
 
 void testing()
@@ -146,6 +148,7 @@ void testing()
 		tests >> x >> y >> r >> _x >> _y >> _r;
 		Base *circle1 = new Circle(Point(x, y), r);
 		Base *circle2 = new Circle(Point(_x, _y), _r);
+
 		for (int j = 0; j < 4; j++)
 		{
 			tests >> x >> y;
@@ -160,24 +163,20 @@ void testing()
 		}
 		Base *polyline2 = new Polyline(points);
 
-		cout << "test" << i + 1 << "\nline1 and polyline1 intersection: " << endl;
-		print(line1->intersect(*polyline1), ans);
-		cout << "polyline1 and circle1 intersection: " << endl;
-		print(polyline1->intersect(*circle1), ans);
-		cout << "circle1 and line1 intersection: " << endl;
-		print(circle1->intersect(*line1), ans);
-		cout << "line1 and line2 intersection: " << endl;
-		print(line1->intersect(*line2), ans);
-		cout << "circle1 and circle2 intersection: " << endl;
-		print(circle1->intersect(*circle2), ans);
-		cout << "polyline1 and polyline2 intersection: " << endl;
-		print(polyline1->intersect(*polyline2), ans);
+		cout << "TEST " << i + 1 << "\n\n";
+		print("line_1 and polyline_1", line1->intersect(*polyline1), ans);
+		print("polyline_1 and circle_1", polyline1->intersect(*circle1), ans);
+		print("circle_1 and line_1", circle1->intersect(*line1), ans);
+		print("line_1 and line_2", line1->intersect(*line2), ans);
+		print("circle_1 and circle_2", circle1->intersect(*circle2), ans);
+		print("polyline_1 and polyline_2", polyline1->intersect(*polyline2), ans);
 	}
-	system("pause");
+
 }
 
 int main()
 {
 	testing();
+	system("pause");
 	return 0;
 }
